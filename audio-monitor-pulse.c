@@ -516,7 +516,7 @@ void audio_monitor_start(struct audio_monitor *audio_monitor)
 	}
 
 	audio_monitor->attr.fragsize = (uint32_t)-1;
-	audio_monitor->attr.maxlength = (uint32_t)-1;
+	audio_monitor->attr.maxlength = pa_usec_to_bytes(50000, &spec);
 	audio_monitor->attr.minreq = (uint32_t)-1;
 	audio_monitor->attr.prebuf = (uint32_t)-1;
 	audio_monitor->attr.tlength = pa_usec_to_bytes(25000, &spec);
@@ -549,7 +549,7 @@ static void do_stream_write(void *param)
 	// If we have grown a large buffer internally, grow the pulse buffer to match so we can write our data out.
 	if (data->new_data.size > data->attr.tlength * 2) {
 		data->attr.fragsize = (uint32_t)-1;
-		data->attr.maxlength = (uint32_t)-1;
+		data->attr.maxlength = data->new_data.size * 2;
 		data->attr.prebuf = (uint32_t)-1;
 		data->attr.minreq = (uint32_t)-1;
 		data->attr.tlength = data->new_data.size;
